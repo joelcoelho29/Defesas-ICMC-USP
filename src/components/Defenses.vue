@@ -41,10 +41,15 @@
 <script>
 import axios from "axios";
 
+const COURSE_SORT_OPTION = "COURSE_SORT";
+const YEAR_SORT_OPTION = "YEAR_SORT";
+
 export default {
   name: "DefensesVue",
   data() {
     return {
+      nameFilter: "",
+      sortOption: "",
       list: [],
     };
   },
@@ -62,32 +67,27 @@ export default {
         console.error(error);
       }
     },
-    sortByYear() {
-      function compareByYear(a, b) {
-        return a.ano - b.ano;
+  },
+  computed: {
+    listaFiltradaOrdenada() {
+      let filteredList = this.list;
+
+      if (this.nameFilter) {
+        filteredList = filteredList.filter((item) =>
+          item.Nome.toLowerCase().includes(this.nameFilter.toLowerCase())
+        );
       }
-      this.list.sort(compareByYear);
-    },
-    sortByCourse() {
-      const compareByCourseName = (a, b) => {
-        const courseNameA = a.Nome.toUpperCase();
-        const courseNameB = b.Nome.toUpperCase();
 
-        if (courseNameA < courseNameB) {
-          return -1;
-        } else if (courseNameA > courseNameB) {
-          return 1;
-        } else {
-          return 0;
-        }
-      };
+      switch (this.sortOption) {
+        case YEAR_SORT_OPTION:
+          filteredList.sort((a, b) => a.Ano - b.Ano);
+          break;
+        case COURSE_SORT_OPTION:
+          filteredList.sort((a, b) => a.Curso.localeCompare(b.Curso));
+          break;
+      }
 
-      this.list.sort(compareByCourseName);
-    },
-    filterByStudentName(studentName) {
-      this.list.filter((item) => {
-        return item.Nome.toLowerCase().includes(studentName.toLowerCase());
-      });
+      return filteredList;
     },
   },
 };
