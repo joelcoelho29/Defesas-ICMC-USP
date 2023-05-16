@@ -1,4 +1,5 @@
 <template>
+  <!-- TODO: Fazer a navbar -->
   <v-app>
     <v-app-bar app color="primary" dark>
       <div class="d-flex align-center">
@@ -34,19 +35,23 @@
     </v-app-bar>
 
     <v-main>
-      <HelloWorld />
+      <!-- <HelloWorld /> -->
+      <Defenses />
     </v-main>
+    <!-- TODO: Criar Footer -->
   </v-app>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld";
+// import HelloWorld from "./components/HelloWorld";
+import Defenses from "./components/Defenses";
 
 export default {
   name: "App",
 
   components: {
-    HelloWorld,
+    // HelloWorld,
+    Defenses,
   },
 
   data: () => ({
