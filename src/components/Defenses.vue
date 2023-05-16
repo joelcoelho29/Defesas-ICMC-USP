@@ -1,12 +1,23 @@
 <template>
   <v-container>
+    <v-text-field
+      v-model="nameFilter"
+      label="Digite o nome para filtrar"
+      outlined
+    ></v-text-field>
+
+    <v-radio-group v-model="sortOption">
+      <v-radio label="Ordenar por curso" value="COURSE_SORT"></v-radio>
+      <v-radio label="Ordenar por ano" value="YEAR_SORT"></v-radio>
+    </v-radio-group>
+
     <v-row class="text-center">
       <v-col
         class="mb-4"
         lg="3"
         md="4"
         sm="6"
-        v-for="(item, i) in list"
+        v-for="(item, i) in filteredAndSorteredList"
         :key="i"
       >
         <v-card class="mx-auto" height="380">
@@ -20,7 +31,7 @@
             v-bind:title="`${item.Ordem} ${item.Nome}`"
             class="text-center"
           >
-            #{{ item.Ordem }} {{ item.Nome | truncate(16) }}
+            #{{ item.Ordem }} {{ item.Nome }}
           </v-card-title>
 
           <v-card-subtitle class="pt-4" v-bind="item.programa">{{
@@ -51,7 +62,7 @@ export default {
   data() {
     return {
       nameFilter: "",
-      sortOption: "",
+      sortOption: YEAR_SORT_OPTION,
       list: [],
     };
   },
@@ -64,14 +75,14 @@ export default {
         const response = await axios.get(
           "http://thanos.icmc.usp.br:4567/api/v1/defesas"
         );
-        this.list = response.data.items.slice(0, 21);
+        this.list = response.data.items;
       } catch (error) {
         console.error(error);
       }
     },
   },
   computed: {
-    listaFiltradaOrdenada() {
+    filteredAndSorteredList() {
       let filteredList = this.list;
 
       if (this.nameFilter) {
@@ -82,10 +93,25 @@ export default {
 
       switch (this.sortOption) {
         case YEAR_SORT_OPTION:
-          filteredList.sort((a, b) => a.Ano - b.Ano);
+          filteredList.sort((a, b) => {
+            const dateA = Number(a.Data.split("/").reverse().join(""));
+            const dateB = Number(b.Data.split("/").reverse().join(""));
+            return dateA - dateB;
+          });
           break;
         case COURSE_SORT_OPTION:
-          filteredList.sort((a, b) => a.Curso.localeCompare(b.Curso));
+          filteredList.sort((a, b) => {
+            const courseNameA = a.Nome.toUpperCase();
+            const courseNameB = b.Nome.toUpperCase();
+
+            if (courseNameA < courseNameB) {
+              return -1;
+            } else if (courseNameA > courseNameB) {
+              return 1;
+            } else {
+              return 0;
+            }
+          });
           break;
       }
 
@@ -97,7 +123,7 @@ export default {
       if (value.length <= maxLength) {
         return value;
       } else {
-        return value.substring(0, maxLength) + "...";
+        return value.split(" ").splice(0, maxLength).join(" ");
       }
     },
   },
