@@ -9,26 +9,28 @@
         v-for="(item, i) in list"
         :key="i"
       >
-        <v-card class="mx-auto">
+        <v-card class="mx-auto" height="380">
           <v-img
-            class="align-end text-white"
-            height="300"
-            src="https://web.icmc.usp.br/SCAPINST/fotos_pessoas/0.jpg"
+            src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+            height="200px"
             cover
+          ></v-img>
+
+          <v-card-title
+            v-bind:title="`${item.Ordem} ${item.Nome}`"
+            class="text-center"
           >
-            <v-card-title v-bind:title="item.nome">{{
-              item.Nome
-            }}</v-card-title>
-          </v-img>
+            #{{ item.Ordem }} {{ item.Nome | truncate(16) }}
+          </v-card-title>
 
           <v-card-subtitle class="pt-4" v-bind="item.programa">{{
             item.Programa
           }}</v-card-subtitle>
 
           <v-card-actions>
-            <v-col cols="auto">
-              <v-btn block rounded="lg" size="large" color="teal">
-                Ver Detalhes
+            <v-col cols="12">
+              <v-btn class="full-width" color="teal" variant="text">
+                Ver detalhes
               </v-btn>
             </v-col>
           </v-card-actions>
@@ -88,6 +90,15 @@ export default {
       }
 
       return filteredList;
+    },
+  },
+  filters: {
+    truncate(value, maxLength) {
+      if (value.length <= maxLength) {
+        return value;
+      } else {
+        return value.substring(0, maxLength) + "...";
+      }
     },
   },
 };
