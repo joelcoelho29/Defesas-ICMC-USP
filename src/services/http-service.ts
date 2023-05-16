@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 
-interface DefenseRawResponse {
+export interface DefenseRawResponse {
   status: string;
   hs: [
     {
@@ -19,16 +19,12 @@ interface DefenseRawResponse {
   ];
 }
 
-interface Defense {
-  items: [
-    {
-      course: string;
-      program: string;
-      order: number;
-      name: string;
-      data: Date;
-    }
-  ];
+export interface Defense {
+  Curso: string;
+  Programa: string;
+  Ordem: string;
+  Nome: string;
+  Data: string;
 }
 
 axios.defaults.baseURL = "http://thanos.icmc.usp.br:4567/api/v1";

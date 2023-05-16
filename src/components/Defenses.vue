@@ -10,49 +10,54 @@
       <v-radio label="Ordenar por curso" value="COURSE_SORT"></v-radio>
       <v-radio label="Ordenar por ano" value="YEAR_SORT"></v-radio>
     </v-radio-group>
+    <v-container class="d-flex flex-column text-center justify-center">
+      <v-row class="text-center">
+        <v-col
+          class="mb-4"
+          lg="3"
+          md="4"
+          sm="6"
+          v-for="(item, i) in filteredAndSorteredList"
+          :key="i"
+        >
+          <v-card class="mx-auto" height="380">
+            <v-img
+              src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+              height="200px"
+              cover
+            ></v-img>
 
-    <v-row class="text-center">
-      <v-col
-        class="mb-4"
-        lg="3"
-        md="4"
-        sm="6"
-        v-for="(item, i) in filteredAndSorteredList"
-        :key="i"
+            <v-card-title
+              v-bind:title="`${item.Ordem} ${item.Nome}`"
+              class="text-center"
+            >
+              #{{ item.Ordem }} {{ item.Nome }}
+            </v-card-title>
+
+            <v-card-subtitle class="pt-4" v-bind="item.Programa">{{
+              item.Programa
+            }}</v-card-subtitle>
+
+            <v-card-actions>
+              <v-col cols="12">
+                <v-btn class="full-width" color="teal" variant="text">
+                  Ver detalhes
+                </v-btn>
+              </v-col>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+      <v-btn @click="loadMore" density="compact" variant="elevated"
+        >Ver mais</v-btn
       >
-        <v-card class="mx-auto" height="380">
-          <v-img
-            src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-            height="200px"
-            cover
-          ></v-img>
-
-          <v-card-title
-            v-bind:title="`${item.Ordem} ${item.Nome}`"
-            class="text-center"
-          >
-            #{{ item.Ordem }} {{ item.Nome }}
-          </v-card-title>
-
-          <v-card-subtitle class="pt-4" v-bind="item.programa">{{
-            item.Programa
-          }}</v-card-subtitle>
-
-          <v-card-actions>
-            <v-col cols="12">
-              <v-btn class="full-width" color="teal" variant="text">
-                Ver detalhes
-              </v-btn>
-            </v-col>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
+    </v-container>
   </v-container>
 </template>
 
-<script>
-import axios from "axios";
+<script lang="ts">
+import axios, { AxiosResponse } from "axios";
+import { DefenseRawResponse, Defense } from "@/services/http-service";
 
 const COURSE_SORT_OPTION = "COURSE_SORT";
 const YEAR_SORT_OPTION = "YEAR_SORT";
@@ -63,7 +68,8 @@ export default {
     return {
       nameFilter: "",
       sortOption: YEAR_SORT_OPTION,
-      list: [],
+      length: 20,
+      database: [],
     };
   },
   created() {
@@ -72,18 +78,22 @@ export default {
   methods: {
     async getDefensesList() {
       try {
-        const response = await axios.get(
+        const response: AxiosResponse<DefenseRawResponse> = await axios.get(
           "http://thanos.icmc.usp.br:4567/api/v1/defesas"
         );
-        this.list = response.data.items;
+        this.database = response.data.items;
       } catch (error) {
         console.error(error);
       }
     },
+    loadMore() {
+      if (this.length > this.database.length) return;
+      this.length += 20;
+    },
   },
   computed: {
     filteredAndSorteredList() {
-      let filteredList = this.list;
+      let filteredList = this.database;
 
       if (this.nameFilter) {
         filteredList = filteredList.filter((item) =>
@@ -115,7 +125,7 @@ export default {
           break;
       }
 
-      return filteredList;
+      return filteredList.slice(0, this.length);
     },
   },
   filters: {
