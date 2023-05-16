@@ -7,6 +7,7 @@
     ></v-text-field>
 
     <v-radio-group v-model="sortOption">
+      <!-- Mapear com enum -->
       <v-radio label="Ordenar por curso" value="COURSE_SORT"></v-radio>
       <v-radio label="Ordenar por ano" value="YEAR_SORT"></v-radio>
     </v-radio-group>
@@ -59,15 +60,22 @@
 import axios, { AxiosResponse } from "axios";
 import { DefenseRawResponse, Defense } from "@/services/http-service";
 
-const COURSE_SORT_OPTION = "COURSE_SORT";
-const YEAR_SORT_OPTION = "YEAR_SORT";
+enum SortOption {
+  COURSE_SORT = "COURSE_SORT",
+  YEAR_SORT = "YEAR_SORT",
+}
 
 export default {
   name: "DefensesVue",
-  data() {
+  data(): {
+    nameFilter: string;
+    sortOption: SortOption;
+    length: number;
+    database: Defense[];
+  } {
     return {
       nameFilter: "",
-      sortOption: YEAR_SORT_OPTION,
+      sortOption: SortOption.YEAR_SORT,
       length: 20,
       database: [],
     };
@@ -101,39 +109,34 @@ export default {
         );
       }
 
-      switch (this.sortOption) {
-        case YEAR_SORT_OPTION:
-          filteredList.sort((a, b) => {
-            const dateA = Number(a.Data.split("/").reverse().join(""));
-            const dateB = Number(b.Data.split("/").reverse().join(""));
-            return dateA - dateB;
-          });
-          break;
-        case COURSE_SORT_OPTION:
-          filteredList.sort((a, b) => {
-            const courseNameA = a.Nome.toUpperCase();
-            const courseNameB = b.Nome.toUpperCase();
+      type FilterSort = {
+        [key in SortOption]: (a: Defense, b: Defense) => number;
+      };
 
-            if (courseNameA < courseNameB) {
-              return -1;
-            } else if (courseNameA > courseNameB) {
-              return 1;
-            } else {
-              return 0;
-            }
-          });
-          break;
-      }
+      const sortFunctions: FilterSort = {
+        [SortOption.YEAR_SORT]: (a, b) => {
+          const dateA = Number(a.Data.split("/").reverse().join(""));
+          const dateB = Number(b.Data.split("/").reverse().join(""));
+          return dateA - dateB;
+        },
+        [SortOption.COURSE_SORT]: (a, b) => {
+          const courseNameA = a.Nome.toUpperCase();
+          const courseNameB = b.Nome.toUpperCase();
+          return courseNameA.localeCompare(courseNameB);
+        },
+      };
+
+      filteredList.sort(sortFunctions[this.sortOption]);
 
       return filteredList.slice(0, this.length);
     },
   },
   filters: {
-    truncate(value, maxLength) {
-      if (value.length <= maxLength) {
-        return value;
+    truncate(name: string, maxLength: number) {
+      if (name.length <= maxLength) {
+        return name;
       } else {
-        return value.split(" ").splice(0, maxLength).join(" ");
+        return name.split(" ").splice(0, maxLength).join(" ");
       }
     },
   },
