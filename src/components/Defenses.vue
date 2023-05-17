@@ -57,22 +57,24 @@
 </template>
 
 <script lang="ts">
-import axios, { AxiosResponse } from "axios";
-import { DefenseRawResponse, Defense } from "@/services/http-service";
+import { Defense } from "@/services/http-service";
+import axios from "axios";
 
 enum SortOption {
   COURSE_SORT = "COURSE_SORT",
   YEAR_SORT = "YEAR_SORT",
 }
 
+type vueDataType = {
+  nameFilter: string;
+  sortOption: SortOption;
+  length: number;
+  database: Defense[];
+};
+
 export default {
   name: "DefensesVue",
-  data(): {
-    nameFilter: string;
-    sortOption: SortOption;
-    length: number;
-    database: Defense[];
-  } {
+  data(): vueDataType {
     return {
       nameFilter: "",
       sortOption: SortOption.YEAR_SORT,
@@ -80,13 +82,10 @@ export default {
       database: [],
     };
   },
-  created() {
-    this.getDefensesList();
-  },
   methods: {
     async getDefensesList() {
       try {
-        const response: AxiosResponse<DefenseRawResponse> = await axios.get(
+        const response = await axios.get(
           "http://thanos.icmc.usp.br:4567/api/v1/defesas"
         );
         this.database = response.data.items;
@@ -99,12 +98,15 @@ export default {
       this.length += 20;
     },
   },
+  created() {
+    this.getDefensesList();
+  },
   computed: {
-    filteredAndSorteredList() {
+    filteredAndSorteredList(): Defense[] {
       let filteredList = this.database;
 
       if (this.nameFilter) {
-        filteredList = filteredList.filter((item) =>
+        filteredList = filteredList.filter((item: Defense) =>
           item.Nome.toLowerCase().includes(this.nameFilter.toLowerCase())
         );
       }
