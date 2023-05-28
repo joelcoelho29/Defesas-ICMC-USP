@@ -56,25 +56,17 @@
   </v-container>
 </template>
 
-<script lang="ts">
-import { Defense } from "@/services/http-service";
+<script>
 import axios from "axios";
 
-enum SortOption {
-  COURSE_SORT = "COURSE_SORT",
-  YEAR_SORT = "YEAR_SORT",
-}
-
-type vueDataType = {
-  nameFilter: string;
-  sortOption: SortOption;
-  length: number;
-  database: Defense[];
+const SortOption = {
+  COURSE_SORT: "COURSE_SORT",
+  YEAR_SORT: "YEAR_SORT",
 };
 
 export default {
   name: "DefensesVue",
-  data(): vueDataType {
+  data() {
     return {
       nameFilter: "",
       sortOption: SortOption.YEAR_SORT,
@@ -102,20 +94,16 @@ export default {
     this.getDefensesList();
   },
   computed: {
-    filteredAndSorteredList(): Defense[] {
+    filteredAndSorteredList() {
       let filteredList = this.database;
 
       if (this.nameFilter) {
-        filteredList = filteredList.filter((item: Defense) =>
+        filteredList = filteredList.filter((item) =>
           item.Nome.toLowerCase().includes(this.nameFilter.toLowerCase())
         );
       }
 
-      type FilterSort = {
-        [key in SortOption]: (a: Defense, b: Defense) => number;
-      };
-
-      const sortFunctions: FilterSort = {
+      const sortFunctions = {
         [SortOption.YEAR_SORT]: (a, b) => {
           const dateA = Number(a.Data.split("/").reverse().join(""));
           const dateB = Number(b.Data.split("/").reverse().join(""));
@@ -134,7 +122,7 @@ export default {
     },
   },
   filters: {
-    truncate(name: string, maxLength: number) {
+    truncate(name, maxLength) {
       if (name.length <= maxLength) {
         return name;
       } else {
