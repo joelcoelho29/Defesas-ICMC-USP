@@ -1,7 +1,8 @@
 <template>
   <v-container>
     <v-text-field
-      v-model="nameFilter"
+      :value="modelValue"
+      @input="$emit('update:modelValue', $event)"
       label="Digite o nome para filtrar"
       outlined
     ></v-text-field>
@@ -11,31 +12,7 @@
 <script>
 export default {
   name: "NameFilter",
-  props: {
-    database: {
-      type: Array,
-      required: true,
-    },
-    filteredList: {
-      type: Array,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      nameFilter: "",
-    };
-  },
-  computed: {
-    filteredAndSorteredList() {
-      if (this.nameFilter) {
-        return this.database.filter((item) =>
-          item.Nome.toLowerCase().includes(this.nameFilter.toLowerCase())
-        );
-      } else {
-        return this.database;
-      }
-    },
-  },
+  props: ["modelValue"],
+  emits: ["update:modelValue"],
 };
 </script>

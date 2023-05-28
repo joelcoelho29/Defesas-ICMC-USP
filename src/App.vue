@@ -2,12 +2,15 @@
   <v-app>
     <NavBar />
     <v-main>
-      <Defenses
-        :nameFilter="nameFilter"
-        :database="database"
-        :loadMore="loadMore"
-        :sortOption="sortOption"
+      <NameFilter
+        :modelValue="nameFilter"
+        @update:modelValue="nameFilter = $event"
       />
+      <SortFilter
+        :modelValue="sortOption"
+        @update:modelValue="sortOption = $event"
+      />
+      <Defenses :database="filteredAndSortedList" :loadMore="loadMore" />
     </v-main>
     <Footer />
   </v-app>
@@ -15,6 +18,8 @@
 
 <script>
 import Defenses from "./components/Defenses";
+import NameFilter from "./components/NameFilter";
+import SortFilter from "./components/SortFilter";
 import NavBar from "./components/Navbar";
 import Footer from "./components/Footer";
 import axios from "axios";
@@ -35,6 +40,8 @@ export default {
     Defenses,
     NavBar,
     Footer,
+    NameFilter,
+    SortFilter,
   },
 
   data() {
@@ -43,6 +50,7 @@ export default {
       sortOption: SortOption.YEAR_SORT,
       length: 20,
       database: [],
+      filteredList: [],
     };
   },
   methods: {
@@ -52,10 +60,9 @@ export default {
           "http://thanos.icmc.usp.br:4567/api/v1/defesas"
         );
         this.database = response.data.items;
+        this.filteredList = this.database.slice(0, this.length);
         this.loadFilterOptions(programOptions, "Programa");
         this.loadFilterOptions(courseOptions, "Curso");
-        console.log(programOptions);
-        console.log(courseOptions);
       } catch (error) {
         console.error(error);
       }
@@ -63,6 +70,7 @@ export default {
     loadMore() {
       if (this.length > this.database.length) return;
       this.length += 20;
+      this.filteredList = this.database.slice(0, this.length);
     },
     loadFilterOptions(optionsArray, attribute) {
       this.database.forEach((element) => {
@@ -76,7 +84,7 @@ export default {
     this.getDefensesList();
   },
   computed: {
-    filteredAndSorteredList() {
+    filteredAndSortedList() {
       let filteredList = this.database;
 
       if (this.nameFilter) {
@@ -84,7 +92,6 @@ export default {
           item.Nome.toLowerCase().includes(this.nameFilter.toLowerCase())
         );
       }
-
       const sortFunctions = {
         [SortOption.YEAR_SORT]: (a, b) => {
           const dateA = Number(a.Data.split("/").reverse().join(""));
@@ -96,16 +103,11 @@ export default {
           const courseNameB = b.Nome.toUpperCase();
           return courseNameA.localeCompare(courseNameB);
         },
-        [SortOption.PROGRAM_SORT]: (a, b) => {
-          const programNameA = a.Nome.toUpperCase();
-          const programNameB = b.Nome.toUpperCase();
-          return programNameA.localeCompare(programNameB);
-        },
       };
 
       filteredList.sort(sortFunctions[this.sortOption]);
 
-      return filteredList.slice(0, 20);
+      return filteredList.slice(0, this.length);
     },
   },
 };

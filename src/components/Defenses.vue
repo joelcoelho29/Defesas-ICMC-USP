@@ -1,16 +1,5 @@
 <template>
   <v-container>
-    <v-text-field
-      v-model="nameFilter"
-      label="Digite o nome para filtrar"
-      outlined
-    ></v-text-field>
-
-    <v-radio-group v-model="sortOption">
-      <!-- Mapear com enum -->
-      <v-radio label="Ordenar por curso" value="COURSE_SORT"></v-radio>
-      <v-radio label="Ordenar por ano" value="YEAR_SORT"></v-radio>
-    </v-radio-group>
     <v-container class="d-flex flex-column text-center justify-center">
       <v-row class="text-center">
         <v-col
@@ -18,7 +7,7 @@
           lg="3"
           md="4"
           sm="6"
-          v-for="(item, i) in filteredAndSorteredList"
+          v-for="(item, i) in database"
           :key="i"
         >
           <v-card class="mx-auto" height="380">
@@ -60,14 +49,6 @@
 export default {
   name: "DefensesVue",
   props: {
-    nameFilter: {
-      type: String,
-      required: true,
-    },
-    sortOption: {
-      type: String,
-      required: true,
-    },
     database: {
       type: Array,
       required: true,
@@ -75,15 +56,6 @@ export default {
     loadMore: {
       type: Function,
       required: true,
-    },
-  },
-  methods: {
-    getSubtitleClass(program) {
-      if (program == "MAT") {
-        return "tag-mat";
-      } else {
-        return "tag-others";
-      }
     },
   },
 };
