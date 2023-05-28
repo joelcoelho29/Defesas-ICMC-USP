@@ -35,9 +35,9 @@
               #{{ item.Ordem }} {{ item.Nome }}
             </v-card-title>
 
-            <v-card-subtitle class="pt-4" v-bind="item.Programa">{{
-              item.Programa
-            }}</v-card-subtitle>
+            <v-card-subtitle class="pt-4" v-bind="item.Programa">
+              Programa {{ item.Programa }}</v-card-subtitle
+            >
 
             <v-card-actions>
               <v-col cols="12">
@@ -57,78 +57,40 @@
 </template>
 
 <script>
-import axios from "axios";
-
-const SortOption = {
-  COURSE_SORT: "COURSE_SORT",
-  YEAR_SORT: "YEAR_SORT",
-};
-
 export default {
   name: "DefensesVue",
-  data() {
-    return {
-      nameFilter: "",
-      sortOption: SortOption.YEAR_SORT,
-      length: 20,
-      database: [],
-    };
+  props: {
+    nameFilter: {
+      type: String,
+      required: true,
+    },
+    sortOption: {
+      type: String,
+      required: true,
+    },
+    database: {
+      type: Array,
+      required: true,
+    },
+    loadMore: {
+      type: Function,
+      required: true,
+    },
   },
   methods: {
-    async getDefensesList() {
-      try {
-        const response = await axios.get(
-          "http://thanos.icmc.usp.br:4567/api/v1/defesas"
-        );
-        this.database = response.data.items;
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    loadMore() {
-      if (this.length > this.database.length) return;
-      this.length += 20;
-    },
-  },
-  created() {
-    this.getDefensesList();
-  },
-  computed: {
-    filteredAndSorteredList() {
-      let filteredList = this.database;
-
-      if (this.nameFilter) {
-        filteredList = filteredList.filter((item) =>
-          item.Nome.toLowerCase().includes(this.nameFilter.toLowerCase())
-        );
-      }
-
-      const sortFunctions = {
-        [SortOption.YEAR_SORT]: (a, b) => {
-          const dateA = Number(a.Data.split("/").reverse().join(""));
-          const dateB = Number(b.Data.split("/").reverse().join(""));
-          return dateA - dateB;
-        },
-        [SortOption.COURSE_SORT]: (a, b) => {
-          const courseNameA = a.Nome.toUpperCase();
-          const courseNameB = b.Nome.toUpperCase();
-          return courseNameA.localeCompare(courseNameB);
-        },
-      };
-
-      filteredList.sort(sortFunctions[this.sortOption]);
-
-      return filteredList.slice(0, this.length);
-    },
-  },
-  filters: {
-    truncate(name, maxLength) {
-      if (name.length <= maxLength) {
-        return name;
+    getSubtitleClass(program) {
+      if (program == "MAT") {
+        return "tag-mat";
       } else {
-        return name.split(" ").splice(0, maxLength).join(" ");
+        return "tag-others";
       }
     },
   },
 };
 </script>
+
+<style scoped>
+.tag-mat {
+  background-color: transparent;
+}
+</style>

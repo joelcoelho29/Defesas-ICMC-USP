@@ -10,7 +10,7 @@
         ></v-img>
       </v-col>
     </v-row>
-    <!-- <nav v-bind:class="active" v-on:click.prevent>
+    <nav v-bind:class="active" v-on:click.prevent>
       <a href="#" class="home" v-on:click="makeActive('home')">Home</a>
       <a href="#" class="projects" v-on:click="makeActive('projects')"
         >Projects</a
@@ -19,7 +19,7 @@
         >Services</a
       >
       <a href="#" class="contact" v-on:click="makeActive('contact')">Contact</a>
-    </nav> -->
+    </nav>
   </v-container>
 </template>
 
