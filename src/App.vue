@@ -2,14 +2,16 @@
   <v-app>
     <NavBar />
     <v-main>
-      <NameFilter
-        :modelValue="nameFilter"
-        @update:modelValue="nameFilter = $event"
-      />
-      <SortFilter
-        :modelValue="sortOption"
-        @update:modelValue="sortOption = $event"
-      />
+      <v-container class="container d-flex">
+        <NameFilter
+          :modelValue="nameFilter"
+          @update:modelValue="nameFilter = $event"
+        />
+        <SortFilter
+          :modelValue="sortOption"
+          @update:modelValue="sortOption = $event"
+        />
+      </v-container>
       <Defenses :database="filteredAndSortedList" :loadMore="loadMore" />
     </v-main>
     <Footer />
