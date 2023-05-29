@@ -12,7 +12,12 @@
           @update:modelValue="sortOption = $event"
         />
       </v-container>
-      <Defenses :database="filteredAndSortedList" :loadMore="loadMore" />
+      <Defenses
+        :database="filteredAndSortedList"
+        :loadMore="loadMore"
+        :state="state"
+        :retry="getDefensesList"
+      />
     </v-main>
     <Footer />
   </v-app>
@@ -35,6 +40,13 @@ const SortOption = {
   PROGRAM_SORT: "PROGRAM_SORT",
 };
 
+const State = {
+  IDLE: 0,
+  LOADING: 1,
+  FAILED: 2,
+  SUCCEEDED: 3,
+};
+
 export default {
   name: "App",
 
@@ -53,20 +65,27 @@ export default {
       length: 20,
       database: [],
       filteredList: [],
+      state: State.IDLE,
     };
   },
   methods: {
     async getDefensesList() {
       try {
+        this.state = State.LOADING;
+        // const response = await axios.get(
+        //   "http://thanos.icmc.usp.br:4567/api/v1/defesas"
+        // );
         const response = await axios.get(
-          "http://thanos.icmc.usp.br:4567/api/v1/defesas"
+          "http://localhost:3000/api/v1/defesas"
         );
         this.database = response.data.items;
         this.filteredList = this.database.slice(0, this.length);
         this.loadFilterOptions(programOptions, "Programa");
         this.loadFilterOptions(courseOptions, "Curso");
+        this.state = State.SUCCEEDED;
       } catch (error) {
         console.error(error);
+        this.state = State.FAILED;
       }
     },
     loadMore() {
