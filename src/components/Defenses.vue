@@ -1,5 +1,40 @@
 <template>
   <v-container>
+    <v-dialog v-model="modalOpen" max-width="500px">
+      <v-card>
+        <v-card-title v-bind:title="`${selectedDefense?.Nome}`">
+          {{ selectedDefense?.Nome }}
+        </v-card-title>
+
+        <v-card-text class="my-5">
+          <v-row class="justify-space-between mx-2" :fill="true">
+            <v-text>Ordem</v-text>
+            <v-text>{{ `${selectedDefense?.Ordem}` }}</v-text>
+          </v-row>
+          <v-divider class="my-5"></v-divider>
+          <v-row class="justify-space-between mx-2" :fill="true">
+            <v-text>Programa</v-text>
+            <v-text>{{ `${selectedDefense?.Programa}` }}</v-text>
+          </v-row>
+          <v-divider class="my-5"></v-divider>
+          <v-row class="justify-space-between mx-2" :fill="true">
+            <v-text>Curso</v-text>
+            <v-text>{{ `${selectedDefense?.Curso}` }}</v-text>
+          </v-row>
+          <v-divider class="my-5"></v-divider>
+          <v-row class="justify-space-between mx-2" :fill="true">
+            <v-text>Data</v-text>
+            <v-text>{{ `${selectedDefense?.Data}` }}</v-text>
+          </v-row>
+          <v-divider class="mt-5"></v-divider>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn color="primary" text @click="closeModal">Fechar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <div v-if="isLoading" class="d-flex align-center justify-center">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </div>
@@ -44,13 +79,20 @@
                 #{{ item.Ordem }} {{ item.Nome }}
               </v-card-title>
 
-              <v-card-subtitle class="pt-4" v-bind="item.Programa">
-                Programa {{ item.Programa }}</v-card-subtitle
-              >
+              <v-card-text>
+                <v-chip v-bind:title="`${item.Programa}`">
+                  {{ item.Programa }}
+                </v-chip>
+              </v-card-text>
 
               <v-card-actions>
                 <v-col cols="12">
-                  <v-btn class="full-width" color="teal" variant="text">
+                  <v-btn
+                    class="full-width"
+                    color="teal"
+                    variant="text"
+                    @click="openModal(item)"
+                  >
                     Ver detalhes
                   </v-btn>
                 </v-col>
@@ -90,6 +132,22 @@ export default {
     state: {
       type: Number,
       required: true,
+    },
+  },
+  data() {
+    return {
+      modalOpen: false,
+      selectedDefense: null,
+    };
+  },
+  methods: {
+    openModal(defense) {
+      this.modalOpen = true;
+      this.selectedDefense = defense;
+    },
+    closeModal() {
+      this.modalOpen = false;
+      this.selectedDefense = null;
     },
   },
   computed: {
