@@ -1,11 +1,11 @@
 <template>
   <v-container>
-    <div v-if="state === 1" class="d-flex align-center justify-center">
+    <div v-if="isLoading" class="d-flex align-center justify-center">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </div>
 
     <v-container
-      v-else-if="state === 2"
+      v-else-if="hasFailed"
       class="d-flex flex-column text-center justify-center"
     >
       <v-text color="primary"
@@ -70,6 +70,8 @@
 </template>
 
 <script>
+import { State } from "@/App.vue";
+
 export default {
   name: "DefensesVue",
   props: {
@@ -88,6 +90,14 @@ export default {
     state: {
       type: Number,
       required: true,
+    },
+  },
+  computed: {
+    isLoading() {
+      return this.state === State.LOADING;
+    },
+    hasFailed() {
+      return this.state === State.FAILED;
     },
   },
 };

@@ -26,6 +26,6 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-  ],
+, "src/constants/state.js"  ],
   "exclude": ["node_modules"]
 }

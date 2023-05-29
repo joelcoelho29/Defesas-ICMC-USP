@@ -40,7 +40,7 @@ const SortOption = {
   PROGRAM_SORT: "PROGRAM_SORT",
 };
 
-const State = {
+export const State = {
   IDLE: 0,
   LOADING: 1,
   FAILED: 2,
