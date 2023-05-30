@@ -2,7 +2,7 @@
   <v-app>
     <NavBar />
     <v-main>
-      <v-container class="container d-flex">
+      <v-container class="container d-lg-flex">
         <NameFilter
           :modelValue="nameFilter"
           @update:modelValue="nameFilter = $event"
@@ -10,6 +10,12 @@
         <SortFilter
           :modelValue="sortOption"
           @update:modelValue="sortOption = $event"
+        />
+        <ProgramFilter
+          :modelValue="selectedPrograms"
+          :state="state"
+          @update:modelValue="selectedPrograms = $event"
+          :programsOptions="programOptions"
         />
       </v-container>
       <Defenses
@@ -27,12 +33,10 @@
 import Defenses from "./components/Defenses";
 import NameFilter from "./components/NameFilter";
 import SortFilter from "./components/SortFilter";
+import ProgramFilter from "./components/ProgramFilter";
 import NavBar from "./components/Navbar";
 import Footer from "./components/Footer";
 import axios from "axios";
-
-let programOptions = [];
-let courseOptions = [];
 
 const SortOption = {
   COURSE_SORT: "COURSE_SORT",
@@ -56,12 +60,16 @@ export default {
     Footer,
     NameFilter,
     SortFilter,
+    ProgramFilter,
   },
 
   data() {
     return {
       nameFilter: "",
       sortOption: SortOption.YEAR_SORT,
+      selectedPrograms: [],
+      programOptions: [],
+      courseOptions: [],
       length: 20,
       database: [],
       filteredList: [],
@@ -72,16 +80,27 @@ export default {
     async getDefensesList() {
       try {
         this.state = State.LOADING;
-        // const response = await axios.get(
-        //   "http://thanos.icmc.usp.br:4567/api/v1/defesas"
-        // );
         const response = await axios.get(
-          "http://localhost:3000/api/v1/defesas"
+          "http://thanos.icmc.usp.br:4567/api/v1/defesas"
         );
+        // const response = await axios.get(
+        //   "http://localhost:3000/api/v1/defesas"
+        // );
         this.database = response.data.items;
         this.filteredList = this.database.slice(0, this.length);
-        this.loadFilterOptions(programOptions, "Programa");
-        this.loadFilterOptions(courseOptions, "Curso");
+        const programOptions = new Set();
+        const courseOptions = new Set();
+        this.database.forEach((element) => {
+          programOptions.add(element.Programa);
+          courseOptions.add(element.Curso);
+        });
+        this.programOptions = Array.from(programOptions).map((program) => ({
+          text: program,
+          value: program,
+        }));
+        this.courseOptions = Array.from(courseOptions);
+        console.log(this.programOptions);
+        console.log(this.courseOptions);
         this.state = State.SUCCEEDED;
       } catch (error) {
         console.error(error);
@@ -93,13 +112,6 @@ export default {
       this.length += 20;
       this.filteredList = this.database.slice(0, this.length);
     },
-    loadFilterOptions(optionsArray, attribute) {
-      this.database.forEach((element) => {
-        if (!optionsArray.includes(element[attribute])) {
-          optionsArray.push(element[attribute]);
-        }
-      });
-    },
   },
   created() {
     this.getDefensesList();
@@ -107,12 +119,18 @@ export default {
   computed: {
     filteredAndSortedList() {
       let filteredList = this.database;
-
       if (this.nameFilter) {
         filteredList = filteredList.filter((item) =>
           item.Nome.toLowerCase().includes(this.nameFilter.toLowerCase())
         );
       }
+
+      if (this.selectedPrograms.length) {
+        filteredList = filteredList.filter((item) =>
+          this.selectedPrograms.includes(item.Programa)
+        );
+      }
+
       const sortFunctions = {
         [SortOption.YEAR_SORT]: (a, b) => {
           const dateA = Number(a.Data.split("/").reverse().join(""));
