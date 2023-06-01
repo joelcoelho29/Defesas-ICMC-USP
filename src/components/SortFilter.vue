@@ -2,7 +2,6 @@
   <v-select
     :items="sortOptions"
     label="Ordenar por"
-    clearable
     outlined
     dense
     color="primary"

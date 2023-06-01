@@ -1,5 +1,5 @@
 {
-  "name": "vingadores",
+  "name": "defesas-icmc-usp",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -18,6 +18,7 @@
     "vuetify": "^2.6.0"
   },
   "devDependencies": {
+    "@mdi/font": "^7.2.96",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "@vue/cli-plugin-babel": "~5.0.0",
