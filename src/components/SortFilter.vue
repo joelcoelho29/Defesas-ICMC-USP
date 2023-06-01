@@ -1,19 +1,14 @@
 <template>
-  <v-container>
-    <v-radio-group
-      :value="modelValue"
-      @change="$emit('update:modelValue', $event)"
-      class="mt-0"
-    >
-      <!-- Mapear com enum -->
-      <v-radio
-        class="mb-0"
-        label="Ordenar por curso"
-        value="COURSE_SORT"
-      ></v-radio>
-      <v-radio class="mb-0" label="Ordenar por ano" value="YEAR_SORT"></v-radio>
-    </v-radio-group>
-  </v-container>
+  <v-select
+    :items="sortOptions"
+    label="Ordenar por"
+    clearable
+    outlined
+    dense
+    color="primary"
+    :value="modelValue"
+    @change="$emit('update:modelValue', $event)"
+  ></v-select>
 </template>
 
 <script>
@@ -21,5 +16,14 @@ export default {
   name: "SortFilter",
   props: ["modelValue"],
   emits: ["update:modelValue"],
+  data() {
+    return {
+      sortOptions: [
+        { text: "Ano (Crescente)", value: "YEAR_SORT" },
+        { text: "Curso (Crescente)", value: "COURSE_SORT" },
+        { text: "Nome (Crescente)", value: "NAME_SORT" },
+      ],
+    };
+  },
 };
 </script>

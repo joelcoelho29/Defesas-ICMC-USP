@@ -65,7 +65,7 @@
             v-for="(item, i) in database"
             :key="i"
           >
-            <v-card class="mx-auto" height="380">
+            <v-card class="mx-auto">
               <v-img
                 src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
                 height="200px"
@@ -76,7 +76,8 @@
                 v-bind:title="`${item.Ordem} ${item.Nome}`"
                 class="text-center"
               >
-                #{{ item.Ordem }} {{ item.Nome }}
+                <!-- Primeiro e ultimo nome -->
+                {{ item.Nome.split(" ")[0] }} {{ item.Nome.split(" ").pop() }}
               </v-card-title>
 
               <v-card-text>

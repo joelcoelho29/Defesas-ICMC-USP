@@ -1,12 +1,11 @@
 <template>
-  <v-container>
-    <v-text-field
-      :value="modelValue"
-      @input="$emit('update:modelValue', $event)"
-      label="Digite o nome para filtrar"
-      outlined
-    ></v-text-field>
-  </v-container>
+  <v-text-field
+    class=""
+    :value="modelValue"
+    @input="$emit('update:modelValue', $event)"
+    label="Digite o nome para filtrar"
+    outlined
+  ></v-text-field>
 </template>
 
 <script>

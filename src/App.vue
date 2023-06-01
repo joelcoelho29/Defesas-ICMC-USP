@@ -2,21 +2,27 @@
   <v-app>
     <NavBar />
     <v-main>
-      <v-container class="container d-lg-flex">
-        <NameFilter
-          :modelValue="nameFilter"
-          @update:modelValue="nameFilter = $event"
-        />
-        <SortFilter
-          :modelValue="sortOption"
-          @update:modelValue="sortOption = $event"
-        />
-        <ProgramFilter
-          :modelValue="selectedPrograms"
-          :state="state"
-          @update:modelValue="selectedPrograms = $event"
-          :programsOptions="programOptions"
-        />
+      <v-container class="container">
+        <v-row class="flex-sm-column flex-lg-row">
+          <v-col>
+            <NameFilter
+              :modelValue="nameFilter"
+              @update:modelValue="nameFilter = $event"
+            />
+            <SortFilter
+              :modelValue="sortOption"
+              @update:modelValue="sortOption = $event"
+            />
+          </v-col>
+          <v-col>
+            <ProgramFilter
+              :modelValue="selectedPrograms"
+              :state="state"
+              @update:modelValue="selectedPrograms = $event"
+              :programsOptions="programOptions"
+            />
+          </v-col>
+        </v-row>
       </v-container>
       <Defenses
         :database="filteredAndSortedList"
@@ -41,6 +47,7 @@ import axios from "axios";
 const SortOption = {
   COURSE_SORT: "COURSE_SORT",
   YEAR_SORT: "YEAR_SORT",
+  NAME_SORT: "NAME_SORT",
   PROGRAM_SORT: "PROGRAM_SORT",
 };
 
@@ -99,8 +106,6 @@ export default {
           value: program,
         }));
         this.courseOptions = Array.from(courseOptions);
-        console.log(this.programOptions);
-        console.log(this.courseOptions);
         this.state = State.SUCCEEDED;
       } catch (error) {
         console.error(error);
@@ -124,7 +129,7 @@ export default {
           item.Nome.toLowerCase().includes(this.nameFilter.toLowerCase())
         );
       }
-
+      console.log(this.sortOption);
       if (this.selectedPrograms.length) {
         filteredList = filteredList.filter((item) =>
           this.selectedPrograms.includes(item.Programa)
@@ -141,6 +146,11 @@ export default {
           const courseNameA = a.Nome.toUpperCase();
           const courseNameB = b.Nome.toUpperCase();
           return courseNameA.localeCompare(courseNameB);
+        },
+        [SortOption.NAME_SORT]: (a, b) => {
+          const nameA = a.Nome.toUpperCase();
+          const nameB = b.Nome.toUpperCase();
+          return nameA.localeCompare(nameB);
         },
       };
 

@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div>
     <div class="text-h6 text-center">Filtrar por Programa</div>
     <div v-if="isLoading" class="d-flex align-center justify-center py-8">
       <v-progress-linear indeterminate color="primary"></v-progress-linear>
@@ -28,7 +28,7 @@
         {{ program.text }}
       </v-btn>
     </v-btn-toggle>
-  </v-container>
+  </div>
 </template>
 
 <script>
