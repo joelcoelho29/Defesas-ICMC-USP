@@ -14,6 +14,16 @@
         </v-col>
         <v-spacer></v-spacer>
         <v-btn
+          v-if="this.$route.path !== '/'"
+          flat
+          color="#A2AD91"
+          class="white--text mr-6"
+          size="x-large"
+          @click="navigateToHome"
+          >Inicio</v-btn
+        >
+        <v-btn
+          v-else
           flat
           color="#A2AD91"
           class="white--text mr-6"
