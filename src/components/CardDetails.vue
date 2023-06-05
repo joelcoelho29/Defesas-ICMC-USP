@@ -32,7 +32,7 @@
       </v-card-text>
 
       <v-card-actions class="d-flex justify-center py-4">
-        <v-btn flat color="#a2ad91" class="white--text" @click="closeModal"
+        <v-btn color="#a2ad91" class="white--text" @click="closeModal"
           >Fechar</v-btn
         >
       </v-card-actions>
