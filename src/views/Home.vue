@@ -40,15 +40,10 @@ import NameFilter from "@/components/NameFilter.vue";
 import SortFilter from "@/components/SortFilter.vue";
 import ProgramFilter from "@/components/ProgramFilter.vue";
 import SortOption from "@/models/SortOptionModel.js";
+import State from "@/models/StateModel.js";
 import axios from "axios";
 
 const MAX_LENGTH = 24;
-export const State = {
-  IDLE: 0,
-  LOADING: 1,
-  FAILED: 2,
-  SUCCEEDED: 3,
-};
 
 export default {
   name: "HomeVue",

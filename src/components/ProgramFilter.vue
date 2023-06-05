@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { State } from "@/views/Home.vue";
+import State from "@/models/StateModel.js";
 
 export default {
   name: "ProgramFilter",
