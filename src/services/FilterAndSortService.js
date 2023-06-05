@@ -18,6 +18,13 @@ function filterBySelectedPrograms(filteredList, selectedPrograms) {
   return filteredList;
 }
 
+function filterBySelectedCourses(filteredList, selectedCourses) {
+  if (selectedCourses.length) {
+    return filteredList.filter((item) => selectedCourses.includes(item.Curso));
+  }
+  return filteredList;
+}
+
 function sortFilteredList(filteredList, sortOption) {
   const sortFunctions = {
     [SortOption.YEAR_SORT_ASC]: (a, b) => {
@@ -61,11 +68,13 @@ function filteredAndSortedList(
   database,
   nameFilter,
   selectedPrograms,
+  selectedCourses,
   sortOption
 ) {
   let filteredList = [...database];
   filteredList = filterByName(filteredList, nameFilter);
   filteredList = filterBySelectedPrograms(filteredList, selectedPrograms);
+  filteredList = filterBySelectedCourses(filteredList, selectedCourses);
   filteredList = sortFilteredList(filteredList, sortOption);
   return filteredList;
 }

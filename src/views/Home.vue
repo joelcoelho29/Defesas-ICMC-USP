@@ -2,8 +2,8 @@
   <v-app>
     <v-main>
       <div class="container">
-        <v-row class="flex-sm-column flex-lg-row">
-          <v-col>
+        <v-row>
+          <v-col class="col-lg-6 col-12">
             <NameFilter
               :modelValue="nameFilter"
               @update:modelValue="nameFilter = $event"
@@ -13,7 +13,15 @@
               @update:modelValue="sortOption = $event"
             />
           </v-col>
-          <v-col>
+          <v-col class="col-lg-3 col-md-6 col-12">
+            <CourseTypeFilter
+              :modelValue="selectedCourses"
+              :state="state"
+              @update:modelValue="selectedCourses = $event"
+              :courseOptions="courseOptions"
+            />
+          </v-col>
+          <v-col class="col-lg-3 col-md-6 col-12">
             <ProgramFilter
               :modelValue="selectedPrograms"
               :state="state"
@@ -47,6 +55,7 @@ import {
   getCourseOptions,
 } from "@/services/DefenseService.js";
 import filteredAndSortedList from "@/services/FilterAndSortService.js";
+import CourseTypeFilter from "@/components/CourseTypeFilter.vue";
 
 const MAX_LENGTH = 24;
 
@@ -58,12 +67,14 @@ export default {
     NameFilter,
     SortFilter,
     ProgramFilter,
+    CourseTypeFilter,
   },
   data() {
     return {
       nameFilter: "",
       sortOption: SortOption.YEAR_SORT,
       selectedPrograms: [],
+      selectedCourses: [],
       programOptions: [],
       courseOptions: [],
       length: MAX_LENGTH,
@@ -110,6 +121,7 @@ export default {
         this.database,
         this.nameFilter,
         this.selectedPrograms,
+        this.selectedCourses,
         this.sortOption
       ).slice(0, this.length);
     },
