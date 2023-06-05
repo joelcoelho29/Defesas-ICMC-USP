@@ -39,14 +39,9 @@ import Defenses from "@/components/Defenses.vue";
 import NameFilter from "@/components/NameFilter.vue";
 import SortFilter from "@/components/SortFilter.vue";
 import ProgramFilter from "@/components/ProgramFilter.vue";
+import SortOption from "@/models/SortOptionModel.js";
 import axios from "axios";
 
-const SortOption = {
-  COURSE_SORT: "COURSE_SORT",
-  YEAR_SORT: "YEAR_SORT",
-  NAME_SORT: "NAME_SORT",
-  PROGRAM_SORT: "PROGRAM_SORT",
-};
 const MAX_LENGTH = 24;
 export const State = {
   IDLE: 0,
@@ -133,20 +128,35 @@ export default {
       }
 
       const sortFunctions = {
-        [SortOption.YEAR_SORT]: (a, b) => {
+        [SortOption.YEAR_SORT_ASC]: (a, b) => {
           const dateA = Number(a.Data.split("/").reverse().join(""));
           const dateB = Number(b.Data.split("/").reverse().join(""));
           return dateA - dateB;
         },
-        [SortOption.COURSE_SORT]: (a, b) => {
+        [SortOption.YEAR_SORT_DESC]: (a, b) => {
+          const dateA = Number(a.Data.split("/").reverse().join(""));
+          const dateB = Number(b.Data.split("/").reverse().join(""));
+          return dateB - dateA;
+        },
+        [SortOption.COURSE_SORT_ASC]: (a, b) => {
           const courseNameA = a.Curso.toUpperCase();
           const courseNameB = b.Curso.toUpperCase();
           return courseNameA.localeCompare(courseNameB);
         },
-        [SortOption.NAME_SORT]: (a, b) => {
+        [SortOption.COURSE_SORT_DESC]: (a, b) => {
+          const courseNameA = a.Curso.toUpperCase();
+          const courseNameB = b.Curso.toUpperCase();
+          return courseNameB.localeCompare(courseNameA);
+        },
+        [SortOption.NAME_SORT_ASC]: (a, b) => {
           const nameA = a.Nome.toUpperCase();
           const nameB = b.Nome.toUpperCase();
           return nameA.localeCompare(nameB);
+        },
+        [SortOption.NAME_SORT_DESC]: (a, b) => {
+          const nameA = a.Nome.toUpperCase();
+          const nameB = b.Nome.toUpperCase();
+          return nameB.localeCompare(nameA);
         },
       };
 

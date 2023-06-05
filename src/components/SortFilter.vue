@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import SortOption from "@/models/SortOptionModel.js";
 export default {
   name: "SortFilter",
   props: ["modelValue"],
@@ -18,9 +19,12 @@ export default {
   data() {
     return {
       sortOptions: [
-        { text: "Ano (Crescente)", value: "YEAR_SORT" },
-        { text: "Curso (Crescente)", value: "COURSE_SORT" },
-        { text: "Nome (Crescente)", value: "NAME_SORT" },
+        { text: "Ano (Crescente)", value: SortOption.YEAR_SORT_ASC },
+        { text: "Ano (Decrescente)", value: SortOption.YEAR_SORT_DESC },
+        { text: "Curso (Crescente)", value: SortOption.COURSE_SORT_ASC },
+        { text: "Curso (Decrescente)", value: SortOption.COURSE_SORT_DESC },
+        { text: "Nome (Crescente)", value: SortOption.NAME_SORT_ASC },
+        { text: "Nome (Decrescente)", value: SortOption.NAME_SORT_DESC },
       ],
     };
   },
