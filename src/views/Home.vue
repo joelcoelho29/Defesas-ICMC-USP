@@ -2,8 +2,8 @@
   <v-app>
     <v-main>
       <div class="container">
-        <v-row class="flex-sm-column flex-lg-row">
-          <v-col>
+        <v-row>
+          <v-col class="col-lg-6 col-12">
             <NameFilter
               :modelValue="nameFilter"
               @update:modelValue="nameFilter = $event"
@@ -13,7 +13,15 @@
               @update:modelValue="sortOption = $event"
             />
           </v-col>
-          <v-col>
+          <v-col class="col-lg-3 col-md-6 col-12">
+            <CourseTypeFilter
+              :modelValue="selectedCourses"
+              :state="state"
+              @update:modelValue="selectedCourses = $event"
+              :courseOptions="courseOptions"
+            />
+          </v-col>
+          <v-col class="col-lg-3 col-md-6 col-12">
             <ProgramFilter
               :modelValue="selectedPrograms"
               :state="state"
@@ -25,7 +33,7 @@
       </div>
       <Defenses
         :database="filteredAndSortedList"
-        :totalLength="totalLength"
+        :MAX_LENGTH="length"
         :loadMore="loadMore"
         :state="state"
         :retry="getDefensesList"
@@ -39,21 +47,17 @@ import Defenses from "@/components/Defenses.vue";
 import NameFilter from "@/components/NameFilter.vue";
 import SortFilter from "@/components/SortFilter.vue";
 import ProgramFilter from "@/components/ProgramFilter.vue";
-import axios from "axios";
+import SortOption from "@/models/SortOptionModel.js";
+import State from "@/models/StateModel.js";
+import {
+  getDefense,
+  getProgramOptions,
+  getCourseOptions,
+} from "@/services/DefenseService.js";
+import filteredAndSortedList from "@/services/FilterAndSortService.js";
+import CourseTypeFilter from "@/components/CourseTypeFilter.vue";
 
-const SortOption = {
-  COURSE_SORT: "COURSE_SORT",
-  YEAR_SORT: "YEAR_SORT",
-  NAME_SORT: "NAME_SORT",
-  PROGRAM_SORT: "PROGRAM_SORT",
-};
 const MAX_LENGTH = 24;
-export const State = {
-  IDLE: 0,
-  LOADING: 1,
-  FAILED: 2,
-  SUCCEEDED: 3,
-};
 
 export default {
   name: "HomeVue",
@@ -63,12 +67,14 @@ export default {
     NameFilter,
     SortFilter,
     ProgramFilter,
+    CourseTypeFilter,
   },
   data() {
     return {
       nameFilter: "",
       sortOption: SortOption.YEAR_SORT,
       selectedPrograms: [],
+      selectedCourses: [],
       programOptions: [],
       courseOptions: [],
       length: MAX_LENGTH,
@@ -79,32 +85,23 @@ export default {
   },
   methods: {
     async getDefensesList() {
-      try {
-        this.state = State.LOADING;
-        const response = await axios.get(
-          "http://thanos.icmc.usp.br:4567/api/v1/defesas",
-          {
-            timeout: 10000, // 10s
-          }
-        );
-        this.database = response.data.items;
-        this.filteredList = this.database.slice(0, this.length);
-        const programOptions = new Set();
-        const courseOptions = new Set();
-        this.database.forEach((element) => {
-          programOptions.add(element.Programa);
-          courseOptions.add(element.Curso);
-        });
-        this.programOptions = Array.from(programOptions).map((program) => ({
-          text: program,
-          value: program,
-        }));
-        this.courseOptions = Array.from(courseOptions);
-        this.state = State.SUCCEEDED;
-      } catch (error) {
-        console.error(error);
+      this.state = State.LOADING;
+      const data = await getDefense();
+      if (data === null) {
         this.state = State.FAILED;
+        return;
       }
+      this.database = data;
+      this.filteredList = this.database.slice(0, this.length);
+      this.programOptions = getProgramOptions().map((program) => ({
+        text: program,
+        value: program,
+      }));
+      this.courseOptions = getCourseOptions().map((course) => ({
+        text: course,
+        value: course,
+      }));
+      this.state = State.SUCCEEDED;
     },
     loadMore() {
       if (this.length > this.database.length) return;
@@ -116,43 +113,14 @@ export default {
     this.getDefensesList();
   },
   computed: {
-    totalLength() {
-      return this.database.length;
-    },
     filteredAndSortedList() {
-      let filteredList = this.database;
-      if (this.nameFilter) {
-        filteredList = filteredList.filter((item) =>
-          item.Nome.toLowerCase().includes(this.nameFilter.toLowerCase())
-        );
-      }
-      if (this.selectedPrograms.length) {
-        filteredList = filteredList.filter((item) =>
-          this.selectedPrograms.includes(item.Programa)
-        );
-      }
-
-      const sortFunctions = {
-        [SortOption.YEAR_SORT]: (a, b) => {
-          const dateA = Number(a.Data.split("/").reverse().join(""));
-          const dateB = Number(b.Data.split("/").reverse().join(""));
-          return dateA - dateB;
-        },
-        [SortOption.COURSE_SORT]: (a, b) => {
-          const courseNameA = a.Curso.toUpperCase();
-          const courseNameB = b.Curso.toUpperCase();
-          return courseNameA.localeCompare(courseNameB);
-        },
-        [SortOption.NAME_SORT]: (a, b) => {
-          const nameA = a.Nome.toUpperCase();
-          const nameB = b.Nome.toUpperCase();
-          return nameA.localeCompare(nameB);
-        },
-      };
-
-      filteredList.sort(sortFunctions[this.sortOption]);
-
-      return filteredList.slice(0, this.length);
+      return filteredAndSortedList(
+        this.database,
+        this.nameFilter,
+        this.selectedPrograms,
+        this.selectedCourses,
+        this.sortOption
+      ).slice(0, this.length);
     },
   },
 };

@@ -4,7 +4,7 @@
 ![Github repo size](https://img.shields.io/github/repo-size/joelcoelho29/defesas-icmc-usp)
 ![Github stars](https://img.shields.io/github/stars/joelcoelho29/defesas-icmc-usp)
 
-![Capa do Projeto](https://i.imgur.com/QKoleua.png)
+![Capa do Projeto](https://i.imgur.com/MWeRXHE.png)
 
 > Trabalho 1 da disciplina de Desenvolvimento Web Mobile oferecida pelo professor Adenilso Simão no semestre 1 de 2023
 
@@ -36,7 +36,7 @@ npm install
 
 ### Execute o Projeto
 
-```
+```bash
 npm run serve
 ```
 
@@ -44,7 +44,7 @@ npm run serve
 
 Durante o projeto, é fundamental seguir um padrão preestabelecido para a formatação do código, caso contrário, ocorrerão erros de compilação. Para garantir a formatação correta, execute o comando a seguir:
 
-```
+```bash
 npm run lint
 ```
 
@@ -54,17 +54,23 @@ A estrutura de pastas do projeto é organizada da seguinte maneira:
 
 ### Disposição e estilos
 
-* `src/components`: Componentes que podem ser reusados entre as páginas. Por exemplo Z
+- `public`: Arquivos estáticos
 
-* `src/router`: Definição de rotas e páginas do projeto
+- `src/components`: Componentes que podem ser reusados entre as páginas.
 
-* `src/views`: Páginas bem definidas
+- `src/router`: Definição de rotas e páginas do projeto
+
+- `src/models`: Definição de modelos de dados
+
+- `src/services`: Serviços de acesso a dados
+
+- `src/views`: Páginas bem definidas
   
-* `src/assets`: Arquivos de Imagens
+- `src/assets`: Arquivos de Imagens
 
 ### Configurações e CI/CD
 
-* `src/plugins`: Configurações técnicas e adições de plugins Vue.
+- `src/plugins`: Configurações técnicas e adições de plugins Vue.
 
 ## Como contribuir
 

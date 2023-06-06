@@ -85,6 +85,7 @@
         </v-row>
 
         <v-btn
+          v-if="database.length >= MAX_LENGTH"
           @click="loadMore"
           outlined
           class="d-flex justify-center mx-auto"
@@ -100,7 +101,7 @@
 </template>
 
 <script>
-import { State } from "@/views/Home.vue";
+import State from "@/models/StateModel.js";
 import CardDetails from "@/components/CardDetails.vue";
 
 export default {
@@ -122,7 +123,7 @@ export default {
       type: Number,
       required: true,
     },
-    totalLength: {
+    MAX_LENGTH: {
       type: Number,
       required: true,
     },

@@ -18,13 +18,5 @@ import Footer from "@/components/Footer";
 export default {
   name: "App",
   components: { Navbar, Footer },
-  mounted() {
-    this.updatePageTitle("Defesas - ICMC USP");
-  },
-  methods: {
-    updatePageTitle(title) {
-      document.title = title;
-    },
-  },
 };
 </script>

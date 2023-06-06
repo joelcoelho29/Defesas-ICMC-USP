@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="text-h6 text-center">Filtrar por Programa</div>
+    <div class="text-h6 text-center">Filtrar por Curso</div>
     <div v-if="isLoading" class="d-flex align-center justify-center py-8">
       <v-progress-linear indeterminate color="primary"></v-progress-linear>
     </div>
@@ -8,24 +8,23 @@
       v-else-if="hasFailed"
       class="d-flex flex-column text-center justify-center"
     >
-      <v-text color="primary"
-        >Ocorreu um erro carregando a lista de programas, tente
-        novamente</v-text
-      >
+      <div color="primary">
+        Ocorreu um erro carregando a lista de cursos, tente novamente
+      </div>
     </div>
     <v-btn-toggle
-      v-model="selectedPrograms"
+      v-model="selectedCourses"
       multiple
       class="my-4 d-flex justify-center"
       @change="updateFilter"
     >
       <v-btn
-        v-for="program in loadPrograms"
-        :key="program.value"
-        :value="program.value"
-        :class="{ 'primary--text': selectedPrograms.includes(program.value) }"
+        v-for="course in loadCourses"
+        :key="course.value"
+        :value="course.value"
+        :class="{ 'primary--text': selectedCourses.includes(course.value) }"
       >
-        {{ program.text }}
+        {{ course.text }}
       </v-btn>
     </v-btn-toggle>
   </div>
@@ -41,7 +40,7 @@ export default {
       type: Array,
       default: () => [],
     },
-    programsOptions: {
+    courseOptions: {
       type: Array,
       required: true,
     },
@@ -52,17 +51,17 @@ export default {
   },
   data() {
     return {
-      selectedPrograms: this.modelValue,
+      selectedCourses: this.modelValue,
     };
   },
   methods: {
     updateFilter() {
-      this.$emit("update:modelValue", this.selectedPrograms);
+      this.$emit("update:modelValue", this.selectedCourses);
     },
   },
   computed: {
-    loadPrograms() {
-      return this.programsOptions;
+    loadCourses() {
+      return this.courseOptions;
     },
     isLoading() {
       return this.state === State.LOADING;
