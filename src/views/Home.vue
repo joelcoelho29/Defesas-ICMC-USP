@@ -33,7 +33,7 @@
       </div>
       <Defenses
         :database="filteredAndSortedList"
-        :totalLength="totalLength"
+        :MAX_LENGTH="length"
         :loadMore="loadMore"
         :state="state"
         :retry="getDefensesList"
@@ -113,9 +113,6 @@ export default {
     this.getDefensesList();
   },
   computed: {
-    totalLength() {
-      return this.database.length;
-    },
     filteredAndSortedList() {
       return filteredAndSortedList(
         this.database,
